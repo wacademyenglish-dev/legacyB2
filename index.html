@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HOGWARTS LEGACY: ANCIENT MYSTERIES | B2 English Lesson</title>
+    
+    <!-- Fonts: Cinzel Decorative for Magic/Titles, Lora for readable elegant text -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Lora:ital,wght@0,400;0,600;1,400&family=Playfair+Display:wght@500;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        magic: {
+                            gold: '#cfb53b',
+                            lightgold: '#f4e38c',
+                            dark: '#0a0a0f',
+                            panel: 'rgba(15, 20, 30, 0.85)',
+                            red: '#740001',
+                            green: '#1a472a',
+                            blue: '#0e1a40',
+                            yellow: '#ecb939'
+                        }
+                    },
+                    fontFamily: {
+                        title: ['Cinzel Decorative', 'serif'],
+                        body: ['Lora', 'serif'],
+                        display: ['Playfair Display', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Core Styles */
+        html, body { margin: 0; padding: 0; width: 100%; height: 100%; background-color: #050508; color: #e2e8f0; overflow: hidden; }
+        
+        #app-bg {
+            position: fixed; inset: 0; z-index: -2;
+            background: radial-gradient(circle at center, #111522 0%, #050508 100%);
+        }
+
+        /* Magical Glassmorphism */
+        .glass {
+            background: rgba(20, 25, 35, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(207, 181, 59, 0.3);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8), inset 0 0 20px rgba(207, 181, 59, 0.05);
+        }
+        .glass-panel { border-radius: 16px; }
+        
+        /* Typography FX */
+        .text-glow-gold { text-shadow: 0 0 15px rgba(207, 181, 59, 0.8); }
+        .text-glow-red { text-shadow: 0 0 15px rgba(220, 38, 38, 0.8); }
+        .text-glow-green { text-shadow: 0 0 15px rgba(34, 197, 94, 0.8); }
+        
+        /* Page Transitions & Layout */
+        .page { 
+            display: none; opacity: 0; transition: opacity 0.5s ease; 
+            width: 100%; height: 100%; position: absolute; top:0; left:0; 
+            overflow-y: auto; overflow-x: hidden;
+            padding: 6rem 1rem 7rem 1rem; box-sizing: border-box;
+            justify-content: center; align-items: center;
+        }
+        .page.active { display: flex; opacity: 1; z-index: 10; animation: fadeIn 0.6s ease forwards; }
+        
+        .page-content {
+            width: 100%; max-width: 1200px; margin: auto;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+
+        /* Magical Sparks (Particles) */
+        #particle-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
+        .particle { position: absolute; background: #cfb53b; border-radius: 50%; opacity: 0.6; animation: floatUp linear infinite; box-shadow: 0 0 10px #cfb53b; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes floatUp { 0% { transform: translateY(100vh) scale(0); opacity: 0; } 50% { opacity: 0.8; } 100% { transform: translateY(-10vh) scale(1); opacity: 0; } }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 20%, 60% { transform: translateX(-10px); } 40%, 80% { transform: translateX(10px); } }
+        .shake-fx { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; }
+        
+        @keyframes pulse-gold { 0% { transform: scale(1); text-shadow: 0 0 10px #cfb53b; } 50% { transform: scale(1.1); text-shadow: 0 0 30px #cfb53b; } 100% { transform: scale(1); text-shadow: 0 0 10px #cfb53b; } }
+        .xp-gain { animation: pulse-gold 0.6s ease; color: #f4e38c; }
+        
+        @keyframes damage-red { 0% { background-color: rgba(255,0,0,0); } 50% { background-color: rgba(150,0,0,0.5); } 100% { background-color: rgba(255,0,0,0); } }
+        .dmg-overlay { position: fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:9999; animation: damage-red 0.4s ease; }
+
+        /* UI Buttons */
+        .btn-magic {
+            background: linear-gradient(45deg, rgba(207, 181, 59, 0.1) 0%, rgba(207, 181, 59, 0.2) 100%);
+            border: 1px solid #cfb53b; color: #f4e38c; padding: 14px 28px;
+            font-family: 'Cinzel Decorative', serif; text-transform: uppercase; letter-spacing: 2px;
+            cursor: pointer; transition: all 0.3s; position: relative; overflow: hidden; border-radius: 4px;
+        }
+        .btn-magic:hover { background: rgba(207, 181, 59, 0.3); box-shadow: 0 0 20px rgba(207, 181, 59, 0.5); transform: translateY(-2px); color: #fff; }
+
+        /* Q&A Accordions */
+        .qa-block .answer-box { max-height: 0; overflow: hidden; transition: max-height 0.5s ease-out, opacity 0.4s ease; opacity: 0; }
+        .qa-block.revealed .answer-box { max-height: 500px; opacity: 1; padding-top: 1rem; margin-top: 1rem; border-top: 1px solid rgba(207, 181, 59, 0.3); }
+        .qa-block.revealed .reveal-hint { display: none; opacity: 0; }
+
+        /* Sandbox Elements */
+        .sandbox-slot { transition: transform 0.2s, background 0.3s; user-select: none; }
+        .sandbox-slot:active { transform: scale(0.95); }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.8); }
+        ::-webkit-scrollbar-thumb { background: #cfb53b; border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+    <div id="app-bg"></div>
+    <div id="particle-container"></div>
+    <div id="dmg-flash"></div>
+
+    <header class="fixed top-0 left-0 w-full glass z-50 flex justify-between items-center p-4 px-8 border-b border-magic-gold/30 bg-black/70">
+        <div class="flex items-center space-x-4 w-1/3">
+            <i class="fa-solid fa-wand-magic-sparkles text-magic-gold text-2xl" id="hp-icon"></i>
+            <div class="w-36 h-3 bg-gray-900 rounded-full overflow-hidden border border-magic-gold/50 shadow-[inset_0_0_10px_rgba(0,0,0,0.8)]">
+                <div id="hp-bar" class="h-full bg-magic-gold w-full transition-all duration-300"></div>
+            </div>
+            <span class="font-display text-magic-gold font-bold tracking-widest text-lg" id="hp-text">100%</span>
+        </div>
+        
+        <div class="text-center w-1/3 flex flex-col items-center">
+            <div class="font-title text-[11px] tracking-[0.3em] text-gray-400 mb-1">FIELD GUIDE</div>
+            <div class="font-title text-2xl font-bold text-white text-glow-gold uppercase leading-none" id="hud-player-name">[ UNKNOWN ]</div>
+            <div class="text-xs text-magic-gold uppercase tracking-widest mt-1 font-body" id="hud-player-class">Awaiting Sorting</div>
+        </div>
+
+        <div class="flex items-center justify-end space-x-4 w-1/3">
+            <span class="font-display text-3xl font-bold text-white" id="xp-counter">0</span>
+            <span class="font-title text-[10px] tracking-widest text-magic-gold leading-tight text-right">HOUSE<br>POINTS</span>
+            <i class="fa-solid fa-hourglass-half text-magic-gold text-2xl"></i>
+        </div>
+    </header>
+
+    <div class="fixed bottom-6 left-6 z-50 flex flex-col items-start gap-3">
+        <button onclick="toggleDMTools()" class="glass w-14 h-14 flex items-center justify-center rounded-full hover:bg-magic-gold/20 transition-colors border border-gray-500 group relative">
+            <i class="fa-solid fa-hat-wizard text-gray-300 group-hover:text-magic-gold transition-colors text-2xl"></i>
+        </button>
+        <div id="dm-panel" class="glass glass-panel p-6 hidden flex-col gap-4 w-72 transform transition-all origin-bottom-left shadow-[0_0_30px_rgba(0,0,0,0.8)]">
+            <div class="text-sm font-title text-magic-gold border-b border-magic-gold/30 pb-2 mb-2 flex justify-between">
+                <span>HEADMASTER TOOLS</span>
+            </div>
+            <button onclick="addXP(50)" class="btn-magic text-sm py-2"><i class="fa-solid fa-plus mr-2"></i> 50 POINTS</button>
+            <button onclick="takeDamage(10)" class="btn-magic text-sm py-2 border-red-800 text-red-400 hover:bg-red-900/40"><i class="fa-solid fa-bolt mr-2"></i> DAMAGE -10</button>
+            <div id="dm-timer-display" class="font-display text-center text-4xl text-glow-gold tracking-widest text-magic-gold mt-2">00:00</div>
+            <div class="flex justify-center gap-6 mt-2">
+                <button id="btn-timer-start" class="text-green-500 hover:text-green-300 text-2xl"><i class="fa-solid fa-play"></i></button>
+                <button id="btn-timer-stop" class="text-red-500 hover:text-red-300 text-2xl"><i class="fa-solid fa-stop"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <div class="fixed bottom-6 right-6 z-50 flex flex-col gap-3 items-end">
+        <button onclick="toggleFullScreen()" class="glass w-12 h-12 flex items-center justify-center rounded-full hover:bg-magic-gold/20 transition-colors border border-gray-500">
+            <i class="fa-solid fa-expand text-gray-300 text-lg"></i>
+        </button>
+        <button onclick="toggleWhiteboard()" class="glass w-16 h-16 flex items-center justify-center rounded-full hover:bg-magic-lightgold/20 transition-colors border-2 border-magic-gold shadow-[0_0_20px_rgba(207,181,59,0.3)]">
+            <i class="fa-solid fa-scroll text-magic-gold text-2xl"></i>
+        </button>
+    </div>
+    
+    <div id="whiteboard-panel" class="fixed inset-0 z-40 bg-black/90 backdrop-blur-xl hidden flex-col p-12 transition-opacity pt-28">
+        <div class="flex justify-between items-center mb-6 max-w-6xl mx-auto w-full">
+            <h2 class="font-title text-4xl text-magic-gold text-glow-gold"><i class="fa-solid fa-feather-pointed mr-4"></i> MAGICAL PARCHMENT</h2>
+            <div class="flex gap-4">
+                <button onclick="clearWhiteboard()" class="text-gray-400 hover:text-red-400 font-title border border-gray-600 px-4 py-2 rounded hover:border-red-400 transition-colors"><i class="fa-solid fa-eraser mr-2"></i> EVANESCO</button>
+                <button onclick="toggleWhiteboard()" class="text-gray-400 hover:text-white text-4xl ml-4"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+        </div>
+        <textarea id="wb-textarea" class="w-full max-w-6xl mx-auto flex-1 bg-[#1a1c23]/80 border-2 border-magic-gold/30 rounded-xl p-8 font-body text-3xl text-gray-200 focus:outline-none focus:border-magic-gold resize-none shadow-[inset_0_0_50px_rgba(0,0,0,0.5)]" placeholder=">> Scribe your notes, grammar corrections, or vocabulary here..."></textarea>
+    </div>
+
+    <main id="main-content" class="w-full h-full relative">
+        
+        <!-- P1: TEACHER'S GUIDE (0) -->
+        <div class="page active" id="page-1">
+            <div class="page-content">
+                <div class="glass glass-panel max-w-4xl w-full p-12 relative border-t-4 border-magic-gold">
+                    <h1 class="font-title text-5xl mb-8 text-magic-gold text-center text-glow-gold">PROFESSOR'S BRIEFING</h1>
+                    <div class="space-y-6 font-body text-xl text-gray-300 leading-relaxed">
+                        <p><strong class="text-white font-title text-2xl">THEME:</strong> Hogwarts Legacy (Wizarding World, Mystery, 1800s)</p>
+                        <p><strong class="text-white font-title text-2xl">TARGET:</strong> B2 Modals of Deduction in the Past <i>(must have, might have, couldn't have, should have)</i>.</p>
+                        <div class="bg-magic-gold/10 border-l-4 border-magic-gold p-6 rounded mt-8 font-body">
+                            <strong class="text-magic-gold font-title tracking-widest block mb-4 uppercase">Instructions:</strong>
+                            <ul class="list-disc list-inside space-y-3 text-lg">
+                                <li>This lesson explores mysteries. The grammar focuses on deducing what happened in the past using Modals + Have + Past Participle.</li>
+                                <li>The student takes a <strong>Sorting Hat Quiz</strong> on page 3, which assigns their Hogwarts House and affects the final RPG narrative (page 28).</li>
+                                <li>Use the <strong>Magical Parchment</strong> (scroll button on the bottom right) for quick notes during Speaking activities.</li>
+                                <li>Click on the questions in the Q&A screens to reveal answers and <i>Follow-up</i> questions.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- P2: COVER (1) -->
+        <div class="page" id="page-2">
+            <div class="absolute inset-0 bg-[url('https://assets.nintendo.com/image/upload/q_auto/f_auto/store/software/switch/70010000014724/72ce0a17215521a167c3da579db4cc48a2f7a52eacc81ad985ba20fd6817fdc2')] bg-cover bg-center z-[-1]">
+                <div class="absolute inset-0 bg-black/60"></div>
+            </div>
+            <div class="page-content">
+                <div class="text-center">
+                    <div class="text-magic-gold tracking-[1em] text-xl mb-4 font-title animate-pulse">FIFTH-YEAR ADMISSION</div>
+                    <h1 class="font-title text-7xl md:text-[8rem] text-white text-glow-gold mb-2 leading-none">HOGWARTS</h1>
+                    <h1 class="font-display text-5xl md:text-[4rem] text-gray-300 mb-12 tracking-widest uppercase italic">Ancient Mysteries</h1>
+                    <div class="flex justify-center gap-6">
+                        <span class="glass px-8 py-3 rounded-full text-lg font-title text-magic-gold border border-magic-gold/50 shadow-[0_0_15px_rgba(207,181,59,0.3)]">LEVEL: B2</span>
+                        <span class="glass px-8 py-3 rounded-full text-lg font-title text-gray-300 border border-gray-500 shadow-[0_0_15px_rgba(255,255,255,0.1)]">MODALS OF DEDUCTION</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- P3: SORTING HAT QUIZ (2) -->
+        <div class="page" id="page-3">
+            <div class="page-content">
+                <h2 class="font-title text-5xl mb-6 text-center text-glow-gold w-full">THE SORTING CEREMONY</h2>
+                <p class="font-body text-2xl text-gray-400 mb-10 text-center italic">The Sorting Hat is placed on your head... What trait defines your journey?</p>
+                
+                <div id="sorting-quiz-area" class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl w-full">
+                    <div class="glass glass-panel p-8 text-center cursor-pointer hover:bg-white/10 transition-all border-2 border-transparent group" onclick="takeSortingQuiz('bravery')">
+                        <h3 class="font-title text-3xl text-white mb-2 group-hover:text-red-500 transition-colors">Courage & Nerve</h3>
+                        <p class="font-body text-gray-400">You face danger head-on.</p>
+                    </div>
+                    <div class="glass glass-panel p-8 text-center cursor-pointer hover:bg-white/10 transition-all border-2 border-transparent group" onclick="takeSortingQuiz('ambition')">
+                        <h3 class="font-title text-3xl text-white mb-2 group-hover:text-green-500 transition-colors">Ambition & Cunning</h3>
+                        <p class="font-body text-gray-400">You will do whatever it takes to succeed.</p>
+                    </div>
+                    <div class="glass glass-panel p-8 text-center cursor-pointer hover:bg-white/10 transition-all border-2 border-transparent group" onclick="takeSortingQuiz('wisdom')">
+                        <h3 class="font-title text-3xl text-white mb-2 group-hover:text-blue-400 transition-colors">Wisdom & Wit</h3>
+                        <p class="font-body text-gray-400">You value knowledge above all else.</p>
+                    </div>
+                    <div class="glass glass-panel p-8 text-center cursor-pointer hover:bg-white/10 transition-all border-2 border-transparent group" onclick="takeSortingQuiz('loyalty')">
+                        <h3 class="font-title text-3xl text-white mb-2 group-hover:text-yellow-500 transition-colors">Loyalty & Patience</h3>
+                        <p class="font-body text-gray-400">You are fair, hardworking, and true.</p>
+                    </div>
+                </div>
+
+                <div id="house-reveal-area" class="hidden text-center max-w-3xl glass glass-panel p-12 shadow-[0_0_50px_rgba(207,181,59,0.2)]">
+                    <!-- Dynamic Reveal -->
+                </div>
+
+                <div id="name-input-section" class="mt-12 hidden flex-col items-center glass p-8 rounded-2xl w-full max-w-2xl border border-magic-gold/50 shadow-[0_0_30px_rgba(207,181,59,0.2)]">
+                    <label class="font-title text-magic-gold mb-4 text-xl">SIGN THE ADMISSION SCROLL:</label>
+                    <div class="flex gap-4 w-full">
+                        <input type="text" id="player-name-input" class="flex-1 bg-black/60 border-2 border-magic-gold/50 rounded-lg text-white px-6 py-4 font-display text-2xl focus:outline-none focus:border-magic-gold" placeholder="Enter your name...">
+                        <button onclick="confirmAgent()" class="btn-magic text-xl px-8">ENROLL</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- P4: WARM UP 1 (3) -->
+        <div class="page" id="page-4">
+            <div class="page-content max-w-4xl">
+                <div class="text-magic-gold font-title tracking-[0.3em] mb-6 text-sm bg-magic-gold/10 px-6 py-2 rounded-full border border-magic-gold/30 inline-block text-center">CHAPTER I: WARM-UP</div>
+                <div class="qa-block glass w-full p-12 cursor-pointer rounded-2xl relative border border-gray-700 hover:border-magic-gold transition-colors" onclick="if(!this.classList.contains('revealed')){ addXP(10); this.classList.add('revealed');} else {this.classList.remove('revealed');}">
+                    <h2 class="font-display text-4xl text-center leading-relaxed italic">"If you received a letter to attend Hogwarts tomorrow, what <span class="text-magic-gold font-bold">would</span> you pack in your trunk?"</h2>
+                    <div class="reveal-hint text-center mt-8 text-magic-gold/70 font-title tracking-[0.2em] text-lg animate-pulse"><i class="fa-solid fa-hand-pointer mr-2"></i>CLICK TO REVEAL FOLLOW-UP</div>
+                    <div class="answer-box font-body text-2xl">
+                        <div class="text-gray-300 mb-6 border-b border-gray-700 pb-4">Target: Elicit vocabulary related to school, magic, or travel items.</div>
+                        <div class="text-magic-lightgold border-l-4 border-magic-gold pl-6 bg-magic-gold/5 p-4 rounded">
+                            <span class="font-title font-bold">FOLLOW-UP:</span> Which magical class would be your favorite? (Potions, Charms, Defense Against the Dark Arts, Herbology...)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- P5: WARM UP 2 (4) -->
+        <div class="page" id="page-5">
+            <div class="page-content max-w-5xl">
+                <div class="text-magic-gold font-title tracking-[0.3em] mb-6 text-sm bg-magic-gold/10 px-6 py-2 rounded-full border border-magic-gold/30 inline-block text-center">CHAPTER I: WARM-UP</div>
+                <div class="qa-block glass w-full p-12 cursor-pointer rounded-2xl relative border border-gray-700 hover:border-magic-gold transition-colors" onclick="if(!this.classList.contains('revealed')){ addXP(10); this.classList.add('revealed');} else {this.classList.remove('revealed');}">
+                    <h2 class="font-display text-4xl text-center leading-relaxed mb-8 italic">"Have you ever lost something important and had to <span class="text-magic-gold font-bold">deduce</span> where it was?"</h2>
+                    <div class="flex flex-wrap justify-center gap-4 mb-6 w-full">
+                        <div class="bg-black/50 border border-gray-600 px-6 py-3 text-xl font-body text-gray-300 rounded-full">Keys</div>
+                        <div class="bg-black/50 border border-gray-600 px-6 py-3 text-xl font-body text-gray-300 rounded-full">Wallet</div>
+                        <div class="bg-black/50 border border-gray-600 px-6 py-3 text-xl font-body text-gray-300 rounded-full">Phone</div>
+                    </div>
+                    <div class="reveal-hint text-center mt-4 text-magic-gold/70 font-title tracking-[0.2em] text-lg animate-pulse"><i class="fa-solid fa-hand-pointer mr-2"></i>CLICK TO REVEAL FOLLOW-UP</div>
+                    <div class="answer-box font-body text-2xl">
+                        <div class="text-gray-300 mb-6 border-b border-gray-700 pb-4">Goal: Get them to talk about past mysteries and logical thinking.</div>
+                        <div class="text-magic-lightgold border-l-4 border-magic-gold pl-6 bg-magic-gold/5 p-4 rounded">
+                            <span class="font-title font-bold">FOLLOW-UP:</span> Did you find it? Where was it hidden?
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- P6: VOCAB MAP (5) -->
+        <div class="page" id="page-6">
+            <div class="page-content w-full max-w-6xl">
+                <div class="flex justify-between items-end mb-6 w-full px-4">
+                    <h2 class="font-title text-5xl text-glow-gold">THE MAP CHAMBER</h2>
+                    <div class="flex gap-4">
+                        <div id="status-vocab1" class="glass px-4 py-2 rounded font-title text-gray-500 border border-gray-600 transition-all duration-500"><i class="fa-solid fa-lock mr-2"></i>VAULT</div>
+                        <div id="status-vocab2" class="glass px-4 py-2 rounded font-title text-gray-500 border border-gray-600 transition-all duration-500"><i class="fa-solid fa-lock mr-2"></i>CONCEAL</div>
+                        <div id="status-vocab3" class="glass px-4 py-2 rounded font-title text-gray-500 border border-gray-600 transition-all duration-500"><i class="fa-solid fa-lock mr-2"></i>REBELLION</div>
+                    </div>
+                </div>
+
+                <div class="relative w-full aspect-[21/9] glass rounded-2xl overflow-hidden border-2 border-magic-gold/50 shadow-[0_0_50px_rgba(207,181,59,0.15)] group">
+                    <img src="https://m.media-amazon.com/images/I/91KhNMK+bmL._AC_UF894,1000_QL80_.jpg" class="absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-luminosity z-10 sepia-[.3]">
+                    <div class="absolute inset-0 bg-magic-gold/10 z-10 pointer-events-none"></div>
+                    
+                    <div class="absolute top-[45%] left-[30%] cursor-pointer transform -translate-x-1/2 -translate-y-1/2 z-20 hover:scale-110 transition-transform" onclick="revealVocabAdvanced('vocab1', this)">
+                        <div class="relative flex items-center justify-center">
+                            <div class="w-12 h-12 border-2 border-dotted border-magic-lightgold rounded-full animate-[spin_6s_linear_infinite_reverse]"></div>
+                            <div class="absolute w-4 h-4 bg-magic-lightgold rounded-full shadow-[0_0_20px_#f4e38c] animate-pulse"></div>
+                            <div class="absolute -top-10 bg-black/90 text-magic-lightgold font-title px-3 py-1 rounded border border-magic-gold text-xs opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap"><i class="fa-solid fa-eye mr-2"></i>INSPECT</div>
+                        </div>
+                    </div>
+
+                    <div class="absolute top-[60%] left-[60%] cursor-pointer transform -translate-x-1/2 -translate-y-1/2 z-20 hover:scale-110 transition-transform" onclick="revealVocabAdvanced('vocab2', this)">
+                        <div class="relative flex items-center justify-center">
+                            <div class="w-12 h-12 border-2 border-dotted border-magic-lightgold rounded-full animate-[spin_6s_linear_infinite_reverse]"></div>
+                            <div class="absolute w-4 h-4 bg-magic-lightgold rounded-full shadow-[0_0_20px_#f4e38c] animate-pulse"></div>
+                            <div class="absolute -top-10 bg-black/90 text-magic-lightgold font-title px-3 py-1 rounded border border-magic-gold text-xs opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap"><i class="fa-solid fa-eye mr-2"></i>INSPECT</div>
+                        </div>
+                    </div>
+
+                    <div class="absolute top-[30%] right-[20%] cursor-pointer transform -translate-x-1/2 -translate-y-1/2 z-20 hover:scale-110 transition-transform" onclick="revealVocabAdvanced('vocab3', this)">
+                        <div class="relative flex items-center justify-center">
+                            <div class="w-12 h-12 border-2 border-dotted border-magic-lightgold rounded-full animate-[spin_6s_linear_infinite_reverse]"></div>
+                            <div class="absolute w-4 h-4 bg-magic-lightgold rounded-full shadow-[0_0_20px_#f4e38c] animate-pulse"></div>
+                            <div class="absolute -top-10 bg-black/90 text-magic-lightgold font-title px-3 py-1 rounded border border-magic-gold text-xs opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap"><i class="fa-solid fa-eye mr-2"></i>INSPECT</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modals -->
+                <div id="vocab1" class="hidden absolute glass glass-panel p-10 z-30 w-[500px] text-center border-t-4 border-magic-gold top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-black/95 shadow-[0_0_50px_rgba(207,181,59,0.5)]">
+                    <i class="fa-solid fa-door-closed text-7xl mb-6 text-magic-gold text-glow-gold"></i>
+                    <h3 class="font-title text-4xl mb-4 text-white">VAULT</h3>
+                    <p class="font-body text-gray-300 text-xl mb-6">A secure room, often in a bank, used to store valuable items safely.</p>
+                    <div class="p-4 bg-magic-gold/10 border-l-4 border-magic-gold text-magic-lightgold text-left font-body text-lg mb-6">
+                        <span class="font-title font-bold">FOLLOW-UP:</span> If you had a hidden vault at Gringotts, what would you keep inside?
+                    </div>
+                    <button class="btn-magic text-lg w-full" onclick="this.parentElement.classList.add('hidden')">MEMORIZE</button>
+                </div>
+                <div id="vocab2" class="hidden absolute glass glass-panel p-10 z-30 w-[500px] text-center border-t-4 border-magic-gold top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-black/95 shadow-[0_0_50px_rgba(207,181,59,0.5)]">
+                    <i class="fa-solid fa-mask text-7xl mb-6 text-magic-gold text-glow-gold"></i>
+                    <h3 class="font-title text-4xl mb-4 text-white">TO CONCEAL</h3>
+                    <p class="font-body text-gray-300 text-xl mb-6">To hide something or keep it secret from others.</p>
+                    <div class="p-4 bg-magic-gold/10 border-l-4 border-magic-gold text-magic-lightgold text-left font-body text-lg mb-6">
+                        <span class="font-title font-bold">FOLLOW-UP:</span> Have you ever had to conceal a secret from a friend?
+                    </div>
+                    <button class="btn-magic text-lg w-full" onclick="this.parentElement.classList.add('hidden')">MEMORIZE</button>
+                </div>
+                <div id="vocab3" class="hidden absolute glass glass-panel p-10 z-30 w-[500px] text-center border-t-4 border-magic-gold top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-black/95 shadow-[0_0_50px_rgba(207,181,59,0.5)]">
+                    <i class="fa-solid fa-fire text-7xl mb-6 text-magic-gold text-glow-gold"></i>
+                    <h3 class="font-title text-4xl mb-4 text-white">REBELLION</h3>
+                    <p class="font-body text-gray-300 text-xl mb-6">An organized attempt to overthrow a government or authority using violence.</p>
+                    <div class="p-4 bg-magic-gold/10 border-l-4 border-magic-gold text-magic-lightgold text-left font-body text-lg mb-6">
+                        <span class="font-title font-bold">FOLLOW-UP:</span> What do you think usually causes a rebellion in history?
+                    </div>
+                    <button class="btn-magic text-lg w-full" onclick="this.parentElement.classList.add('hidden')">MEMORIZE</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- P7: SYNOPSIS (6) -->
+        <div class="page" id="page-7">
+            <div class="page-content max-w-6xl w-full">
+                <h2 class="font-title text-5xl mb-10 text-center w-full text-glow-gold">DECRYPT THE FIELD GUIDE</h2>
+                <div class="flex flex-col md:flex-row w-full shadow-[0_0_40px_rgba(0,0,0,0.8)] rounded-2xl overflow-hidden border border-magic-gold/30">
+                    <div class="w-full md:w-2/3 bg-[#11131a] p-12 font-body text-2xl leading-[1.9] text-gray-200">
+                        <p class="mb-6">In the late 1800s, a new fifth-year student arrives at Hogwarts possessing a rare ability to see Ancient Magic.</p>
+                        <p class="mb-6">However, the Wizarding World is in danger. A goblin named Ranrok is leading a <span class="text-magic-gold font-bold border-b border-magic-gold cursor-pointer" onclick="showDef('rebellion')">rebellion</span>. He wants to steal a powerful magic that wizards tried to <span class="text-magic-gold font-bold border-b border-magic-gold cursor-pointer" onclick="showDef('conceal')">conceal</span> centuries ago.</p>
+                        <p>The professors are hiding secrets. To survive, you must explore the castle and deduce what happened in the past.</p>
+                    </div>
+                    <!-- Dictionary side (light parchment) -->
+                    <div class="w-full md:w-1/3 bg-[#e8dcb8] text-[#3e2723] p-10 text-center flex flex-col items-center justify-center relative shadow-[inset_15px_0_20px_-15px_rgba(0,0,0,0.5)]">
+                        <div class="absolute left-0 top-0 bottom-0 w-4 bg-gradient-to-r from-black/20 to-transparent"></div>
+                        <i class="fa-solid fa-book-open text-6xl text-[#5c4033] mb-6" id="dict-icon"></i>
+                        <h3 id="dict-word" class="font-title text-3xl mb-4 text-[#5c4033] font-bold">REVEAL SPELL</h3>
+                        <p id="dict-def" class="font-body text-xl font-medium text-[#5c4033]">Click the highlighted words on the parchment to reveal their meaning.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- P8: LORE CONVERSATION (7) -->
+        <div class="page" id="page-8">
+            <div class="page-content max-w-5xl">
+                <div class="text-magic-gold font-title tracking-[0.3em] mb-6 text-sm bg-magic-gold/10 px-6 py-2 rounded-full border border-magic-gold/30 inline-block text-center">CHAPTER II: THE MYSTERY</div>
+                <div class="qa-block glass w-full p-12 cursor-pointer rounded-2xl relative border border-gray-700 hover:border-magic-gold transition-colors" onclick="if(!this.classList.contains('revealed')){ addXP(10); this.classList.add('revealed');} else {this.classList.remove('revealed');}">
+                    <h2 class="font-display text-4xl text-center leading-relaxed mb-8 italic">"If you discovered a forgotten room in your school that was locked for 100 years, what do you think the teachers <span class="text-magic-gold font-bold">concealed</span> inside?"</h2>
+                    <div class="reveal-hint text-center mt-4 text-magic-gold/70 font-title tracking-[0.2em] text-lg animate-pulse"><i class="fa-solid fa-hand-pointer mr-2"></i>CLICK TO REVEAL FOLLOW-UP</div>
+                    <div class="answer-box font-body text-2xl">
+                        <div class="text-gray-300 mb-6 border-b border-gray-700 pb-4">Target: Encourage imaginative vocabulary (monsters, ancient books, treasures).</div>
+                        <div class="text-magic-lightgold border-l-4 border-magic-gold pl-6 bg-magic-gold/5 p-4 rounded">
+                            <span class="font-title font-bold">FOLLOW-UP:</span> Would you tell the headmaster about the room, or keep it a secret for yourself?
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- P9: VISUAL EVIDENCE (INTRO TO MODALS) (8) -->
+        <div class="page" id="page-9">
+            <div class="page-content">
+                <h2 class="font-title text-5xl mb-12 text-glow-gold">CRIME SCENE INVESTIGATION</h2>
+                <div class="flex flex-col md:flex-row gap-10 w-full max-w-6xl">
+                    <div class="flex-1 glass p-8 flex flex-col items-center rounded-2xl">
+                        <div class="w-full h-64 bg-gray-900 rounded-xl mb-8 relative overflow-hidden border border-gray-700">
+                            <img src="https://images.unsplash.com/photo-1507842217343-583bb7270b66?q=80&w=1000" class="absolute inset-0 w-full h-full object-cover opacity-80 mix-blend-luminosity sepia-[.2]">
+                        </div>
+                        <p class="font-body text-2xl text-center leading-relaxed text-gray-300">The library door is broken and books are floating.</p>
+                        <p class="font-display text-3xl text-center mt-4 text-white">Someone <span class="text-magic-gold font-bold">must have</span> used magic here.</p>
+                    </div>
+                    <div class="flex-1 glass p-8 flex flex-col items-center rounded-2xl">
+                        <div class="w-full h-64 bg-gray-900 rounded-xl mb-8 relative overflow-hidden border border-gray-700">
+                            <img src="https://images.unsplash.com/photo-1519074069444-1ba4fff66d16?q=80&w=1000" class="absolute inset-0 w-full h-full object-cover opacity-80 mix-blend-luminosity sepia-[.2]">
+                        </div>
+                        <p class="font-body text-2xl text-center leading-relaxed text-gray-300">The vault was protected by strong spells.</p>
+                        <p class="font-display text-3xl text-center mt-4 text-white">A first-year student <span class="text-red-500 font-bold">couldn't have</span> opened it.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- P10: SANDBOX 1 (MUST HAVE / CAN'T HAVE) (9) -->
+        <div class="page" id="page-10">
+            <div class="page-content">
+                <h2 class="font-title text-6xl text-magic-gold text-glow-gold mb-4">THEORY OF MAGIC</h2>
+                <p class="font-title text-xl text-gray-400 mb-10 uppercase tracking-widest bg-magic-gold/10 px-6 py-2 rounded-full border border-magic-gold/30">Node 1: High Certainty (99%)</p>
+                <div class="glass glass-panel p-16 w-full max-w-5xl text-center border-t-4 border-magic-gold shadow-[0_0_50px_rgba(207,181,59,0.15)]">
+                    <p class="font-body text-2xl text-gray-300 mb-10 border-b border-gray-700 pb-8">Use these modals when you are almost sure about something that happened in the <span class="text-magic-lightgold">past</span> based on evidence.</p>
+                    <div class="flex flex-wrap justify-center gap-6 text-4xl font-display italic items-center">
+                        <div class="text-gray-400">He</div>
+                        <div class="sandbox-slot glass px-10 py-8 rounded-xl font-bold border border-magic-gold text-magic-gold bg-magic-gold/10 cursor-pointer shadow-[0_0_20px_rgba(207,181,59,0.3)] hover:bg-magic-gold/20" onclick="cycleWord(this, ['must have', 'can\'t have', 'couldn\'t have'])">must have</div>
+                        <div class="sandbox-slot glass px-10 py-8 rounded-xl cursor-pointer hover:bg-white/10 border border-gray-600" onclick="cycleWord(this, ['stolen the wand.', 'seen the monster.', 'cast the spell.'])">stolen the wand.</div>
+                    </div>
+                    <div class="mt-12 flex justify-center gap-12 text-lg font-body text-gray-400">
+                        <div class="text-center"><span class="text-magic-gold font-bold">Must have:</span> I am sure he did it.</div>
+                        <div class="text-center"><span class="text-red-400 font-bold">Can't / Couldn't have:</span> I am sure he didn't do it.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- P11: SANDBOX 2 (MIGHT HAVE) (10) -->
+        <div class="page" id="page-11">
+            <div class="page-content">
+                <h2 class="font-title text-6xl text-magic-gold text-glow-gold mb-4">THEORY OF MAGIC</h2>
+                <p class="font-title text-xl text-gray-400 mb-10 uppercase tracking-widest bg-blue-900/30 px-6 py-2 rounded-full border border-blue-500/30">Node 2: Possibility (50%)</p>
+                <div class="glass glass-panel p-16 w-full max-w-5xl text-center border-t-4 border-blue-400 shadow-[0_0_50px_rgba(59,130,246,0.15)]">
+                    <p class="font-body text-2xl text-gray-300 mb-10 border-b border-gray-700 pb-8">Use these when you are <span class="text-blue-300 font-bold">guessing</span> what happened, but you are not sure.</p>
+                    <div class="flex flex-wrap justify-center gap-6 text-4xl font-display italic items-center">
+                        <div class="text-gray-400">The goblins</div>
+                        <div class="sandbox-slot glass px-10 py-8 rounded-xl font-bold border border-blue-400 text-blue-300 bg-blue-900/20 cursor-pointer shadow-[0_0_20px_rgba(59,130,246,0.3)] hover:bg-blue-900/40" onclick="cycleWord(this, ['might have', 'may have', 'could have'])">might have</div>
+                        <div class="sandbox-slot glass px-10 py-8 rounded-xl cursor-pointer hover:bg-white/10 border border-gray-600" onclick="cycleWord(this, ['attacked the village.', 'found the vault.', 'escaped into the forest.'])">attacked the village.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- P12: VIDEO (11) -->
+        <div class="page" id="page-12">
+            <div class="page-content max-w-6xl w-full">
+                <div class="text-center w-full">
+                    <div class="flex items-center justify-center text-magic-gold animate-pulse mb-8 font-title text-2xl tracking-[0.3em]">
+                        <i class="fa-solid fa-eye mr-4"></i> PENSIEVE MEMORY DETECTED
+                    </div>
+                    <div class="glass p-3 rounded-2xl relative w-full pt-[56.25%] border-2 border-magic-gold/50 bg-black shadow-[0_0_50px_rgba(207,181,59,0.3)]">
+                        <iframe class="absolute top-0 left-0 w-full h-full rounded-xl" src="https://www.youtube.com/embed/1O6Qstncpnc?start=15" frameborder="0" allowfullscreen></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- P13: Q&A (12) -->
+        <div class="page" id="page-13">
+            <div class="page-content w-full max-w-5xl">
+                <h2 class="font-title text-5xl mb-12 text-glow-gold text-center">MEMORY ANALYSIS</h2>
+                <div class="space-y-6 w-full">
+                    <div class="qa-block glass p-10 cursor-pointer border border-gray-700 rounded-2xl hover:border-magic-gold transition-colors" onclick="if(!this.classList.contains('revealed')){ addXP(15); this.classList.add('revealed');} else {this.classList.remove('revealed');}">
+                        <div class="font-display text-3xl flex justify-between">1. The professors look worried. What <span class="text-magic-gold italic mx-2">might have</span> happened? <i class="fa-solid fa-chevron-down text-gray-600 text-xl mt-1"></i></div>
+                        <div class="reveal-hint text-center mt-6 text-magic-gold/70 font-title tracking-[0.2em] text-lg animate-pulse"><i class="fa-solid fa-hand-pointer mr-2"></i>CLICK TO REVEAL FOLLOW-UP</div>
+                        <div class="answer-box font-body text-2xl text-gray-200">
+                            They might have discovered the Goblin Rebellion.
+                            <div class="mt-6 p-4 bg-magic-gold/10 border-l-4 border-magic-gold text-magic-lightgold">Follow-up: Do you think the students know the truth?</div>
+                        </div>
+                    </div>
+                    <div class="qa-block glass p-10 cursor-pointer border border-gray-700 rounded-2xl hover:border-magic-gold transition-colors" onclick="if(!this.classList.contains('revealed')){ addXP(15); this.classList.add('revealed');} else {this.classList.remove('revealed');}">
+                        <div class="font-display text-3xl flex justify-between">2. The student uses very powerful spells. Who <span class="text-magic-gold italic mx-2">must have</span> taught him? <i class="fa-solid fa-chevron-down text-gray-600 text-xl mt-1"></i></div>
+                        <div class="reveal-hint text-center mt-6 text-magic-gold/70 font-title tracking-[0.2em] text-lg animate-pulse"><i class="fa-solid fa-hand-pointer mr-2"></i>CLICK TO REVEAL FOLLOW-UP</div>
+                        <div class="answer-box font-body text-2xl text-gray-200">
+                            Professor Fig must have taught him. Or he might have learned from an ancient book.
+                            <div class="mt-6 p-4 bg-magic-gold/10 border-l-4 border-magic-gold text-magic-lightgold">Follow-up: Is it dangerous for a teenager to have that much power?</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- P14: SPEAKING AFTER VIDEO (13) -->
+        <div class="page" id="page-14">
+            <div class="page-content max-w-4xl">
+                <div class="text-magic-gold font-title tracking-[0.4em] mb-6 text-sm bg-magic-gold/10 px-6 py-2 rounded-full border border-magic-gold/30 inline-block text-center">CHAPTER III: DEDUCTION</div>
+                <div class="qa-block glass w-full p-12 cursor-pointer rounded-2xl relative border border-gray-700 hover:border-magic-gold transition-colors" onclick="if(!this.classList.contains('revealed')){ addXP(10); this.classList.add('revealed');} else {this.classList.remove('revealed');}">
+                    <h2 class="font-display text-4xl leading-relaxed text-center italic">"The dark wizard was defeated easily. He <span class="text-red-500 font-bold">couldn't have</span> been very strong." Do you agree?</h2>
+                    <div class="reveal-hint text-center mt-8 text-magic-gold/70 font-title tracking-[0.2em] text-lg animate-pulse"><i class="fa-solid fa-hand-pointer mr-2"></i>CLICK TO REVEAL FOLLOW-UP</div>
+                    <div class="answer-box font-body text-2xl text-left">
+                        <div class="text-gray-300 mb-6 border-b border-gray-700 pb-4">Target: "I agree, he couldn't have been strong." OR "I disagree, the student must have been stronger."</div>
+                        <div class="text-magic-lightgold border-l-4 border-magic-gold pl-6 bg-magic-gold/10 p-4 rounded">
+                            <span class="font-title font-bold">FOLLOW-UP:</span> If you were in a magical duel, what spell would you use first?
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- P15: TRIAL 1 (MATCHING) (14) -->
+        <div class="page" id="page-15">
+            <div class="page-content w-full">
+                <h2 class="font-title text-5xl text-magic-gold text-glow-gold mb-10 text-center">O.W.L. EXAM: LOGIC</h2>
+                <div class="flex flex-col md:flex-row gap-10 w-full max-w-6xl justify-center" id="matching-game">
+                    <div class="flex flex-col gap-6 w-full md:w-1/2" id="match-col-a">
+                        <button class="glass p-8 text-left font-body text-2xl match-btn rounded-xl border-2 border-transparent transition-all shadow-md" data-match="1">There is no gold in the vault.</button>
+                        <button class="glass p-8 text-left font-body text-2xl match-btn rounded-xl border-2 border-transparent transition-all shadow-md" data-match="2">The wand is broken in half.</button>
+                        <button class="glass p-8 text-left font-body text-2xl match-btn rounded-xl border-2 border-transparent transition-all shadow-md" data-match="3">Professor Black looks angry.</button>
+                    </div>
+                    <div class="flex flex-col gap-6 w-full md:w-1/2" id="match-col-b">
+                        <button class="glass p-8 text-left font-body text-2xl match-btn rounded-xl border-2 border-transparent transition-all shadow-md" data-match="3">A student must have broken a rule.</button>
+                        <button class="glass p-8 text-left font-body text-2xl match-btn rounded-xl border-2 border-transparent transition-all shadow-md" data-match="1">Someone must have stolen it.</button>
+                        <button class="glass p-8 text-left font-body text-2xl match-btn rounded-xl border-2 border-transparent transition-all shadow-md" data-match="2">He couldn't have cast that spell.</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- P16: TRIAL 2 (MCQ) (15) -->
+        <div class="page" id="page-16">
+            <div class="page-content">
+                <div class="text-center mb-12 w-full">
+                    <h2 class="font-title text-5xl text-magic-gold text-glow-gold mb-6">O.W.L. EXAM: DEDUCTION</h2>
+                    <p class="font-body text-2xl text-gray-400">Choose the correct modal to complete the theory.</p>
+                </div>
+                <div class="glass glass-panel p-16 w-full max-w-5xl text-center border border-magic-gold/30 shadow-[0_0_40px_rgba(207,181,59,0.1)]">
+                    <h3 class="font-body text-4xl mb-16 leading-relaxed italic">"The dragon is asleep and the cage is open. Someone <span class="inline-block w-48 border-b-4 border-magic-gold mx-3 relative top-2"></span> used a sleeping potion!"</h3>
+                    <div class="flex justify-center gap-8 flex-wrap">
+                        <button class="btn-magic text-2xl py-5 px-8" onclick="checkExercise(this, false, 'MCQ')">might has</button>
+                        <button class="btn-magic text-2xl py-5 px-8" onclick="checkExercise(this, true, 'MCQ')">must have</button>
+                        <button class="btn-magic text-2xl py-5 px-8" onclick="checkExercise(this, false, 'MCQ')">can't have</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- P17: TRIAL 3 (SENTENCE BUILDER) (16) -->
+        <div class="page" id="page-17">
+            <div class="page-content">
+                <div class="text-center mb-12 w-full">
+                    <h2 class="font-title text-5xl text-magic-gold text-glow-gold mb-6">O.W.L. EXAM: SYNTAX</h2>
+                    <p class="font-body text-2xl text-gray-400">Reconstruct the torn parchment.</p>
+                </div>
+                <div class="w-full max-w-6xl flex flex-col items-center">
+                    <div id="sb1-answer" class="w-full min-h-[140px] glass mb-12 flex flex-wrap items-center justify-center gap-4 p-8 border-4 border-dashed border-magic-gold/50 rounded-2xl bg-[#0a0a0f]/80"></div>
+                    <div id="sb1-bank" class="flex flex-wrap justify-center gap-5">
+                        <button class="glass px-10 py-5 font-display text-3xl hover:bg-magic-gold/20 transition-colors builder-word rounded-xl shadow-lg border border-gray-600 hover:border-magic-gold">have</button>
+                        <button class="glass px-10 py-5 font-display text-3xl hover:bg-magic-gold/20 transition-colors builder-word rounded-xl shadow-lg border border-gray-600 hover:border-magic-gold">escaped.</button>
+                        <button class="glass px-10 py-5 font-display text-3xl hover:bg-magic-gold/20 transition-colors builder-word rounded-xl shadow-lg border border-gray-600 hover:border-magic-gold">They</button>
+                        <button class="glass px-10 py-5 font-display text-3xl hover:bg-magic-gold/20 transition-colors builder-word rounded-xl shadow-lg border border-gray-600 hover:border-magic-gold">couldn't</button>
+                    </div>
+                    <div class="mt-16 flex gap-8">
+                        <button onclick="resetBuilder('sb1')" class="text-gray-400 hover:text-white font-title text-xl border border-gray-600 px-6 py-3 rounded hover:border-white transition-all tracking-widest"><i class="fa-solid fa-rotate-left mr-3"></i>RESET</button>
+                        <button onclick="checkBuilder('sb1', ['They', 'couldn\'t', 'have', 'escaped.'])" class="btn-magic hidden text-xl px-10 py-3 tracking-widest" id="sb1-check">CAST SPELL</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- P18: SANDBOX 3 (SHOULD HAVE) (17) -->
+        <div class="page" id="page-18">
+            <div class="page-content">
+                <h2 class="font-title text-6xl text-magic-gold text-glow-gold mb-6">THEORY OF MAGIC</h2>
+                <p class="font-title text-xl text-gray-400 mb-10 uppercase tracking-widest bg-red-900/30 px-6 py-2 rounded-full border border-red-600/50">Node 3: Regrets & Criticism</p>
+                <div class="glass glass-panel p-16 w-full max-w-5xl text-center border-t-4 border-red-700 shadow-[0_0_50px_rgba(220,38,38,0.15)]">
+                    <p class="font-body text-2xl text-gray-300 mb-10 border-b border-gray-700 pb-8">Use <span class="text-red-400 font-bold">should have</span> to express that a past action was a bad idea or a mistake.</p>
+                    <div class="flex flex-wrap justify-center gap-6 text-4xl font-display italic items-center">
+                        <div class="text-gray-400">You</div>
+                        <div class="sandbox-slot glass px-10 py-8 rounded-xl font-bold border border-red-600 text-red-400 bg-red-900/20 cursor-pointer shadow-[0_0_20px_rgba(220,38,38,0.3)] hover:bg-red-900/40" onclick="cycleWord(this, ['should have', 'shouldn\'t have'])">shouldn't have</div>
+                        <div class="sandbox-slot glass px-10 py-8 rounded-xl cursor-pointer hover:bg-white/10 border border-gray-600" onclick="cycleWord(this, ['used Dark Magic.', 'opened that door.', 'fought the troll.'])">used Dark Magic.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- P19: TRIAL 4 (ERROR PURGE) (18) -->
+        <div class="page" id="page-19">
+            <div class="page-content">
+                <div class="text-center mb-12 w-full">
+                    <h2 class="font-title text-5xl text-magic-gold text-glow-gold mb-6">O.W.L. EXAM: ANOMALIES</h2>
+                    <p class="font-body text-2xl text-gray-400">The scroll is cursed. Click the <span class="text-red-500 font-bold">red errors</span> to cure them.</p>
+                </div>
+                <div class="glass glass-panel p-16 w-full max-w-5xl font-body text-3xl leading-[2.5] text-center border-2 border-red-900/50 shadow-[inset_0_0_50px_rgba(220,38,38,0.1)] bg-[#110505]/80">
+                    The goblin was defeated easily. He <span class="text-red-500 font-bold cursor-pointer border-b-4 border-red-600 hover:bg-red-900/40 transition-colors anomaly px-3 rounded" onclick="fixAnomaly(this, 'couldn\'t have')">couldn't had</span> been a boss. Look at the destruction! A troll <span class="text-red-500 font-bold cursor-pointer border-b-4 border-red-600 hover:bg-red-900/40 transition-colors anomaly px-3 rounded" onclick="fixAnomaly(this, 'must have destroyed')">must have destroy</span> the village. The Aurors arrived late... they <span class="text-red-500 font-bold cursor-pointer border-b-4 border-red-600 hover:bg-red-900/40 transition-colors anomaly px-3 rounded" onclick="fixAnomaly(this, 'should have')">should of</span> come faster!
+                </div>
+            </div>
+        </div>
+
+        <!-- P20: TRIAL 5 (QUESTION ASSEMBLY) (19) -->
+        <div class="page" id="page-20">
+            <div class="page-content">
+                <div class="text-center mb-12 w-full">
+                    <h2 class="font-title text-5xl text-magic-gold text-glow-gold mb-6">O.W.L. EXAM: INTERROGATION</h2>
+                    <p class="font-body text-2xl text-gray-400">Construct the interrogative spell.</p>
+                </div>
+                <div class="w-full max-w-6xl flex flex-col items-center">
+                    <div id="sb2-answer" class="w-full min-h-[140px] glass mb-12 flex flex-wrap items-center justify-center gap-4 p-8 border-4 border-dashed border-magic-gold/50 rounded-2xl bg-[#0a0a0f]/80"></div>
+                    <div id="sb2-bank" class="flex flex-wrap justify-center gap-5">
+                        <button class="glass px-10 py-5 font-display text-3xl hover:bg-magic-gold/20 border-gray-600 transition-colors builder-word rounded-xl shadow-lg border hover:border-magic-gold">stolen</button>
+                        <button class="glass px-10 py-5 font-display text-3xl hover:bg-magic-gold/20 border-gray-600 transition-colors builder-word rounded-xl shadow-lg border hover:border-magic-gold">Who</button>
+                        <button class="glass px-10 py-5 font-display text-3xl hover:bg-magic-gold/20 border-gray-600 transition-colors builder-word rounded-xl shadow-lg border hover:border-magic-gold">the wand?</button>
+                        <button class="glass px-10 py-5 font-display text-3xl hover:bg-magic-gold/20 border-gray-600 transition-colors builder-word rounded-xl shadow-lg border hover:border-magic-gold">have</button>
+                        <button class="glass px-10 py-5 font-display text-3xl hover:bg-magic-gold/20 border-gray-600 transition-colors builder-word rounded-xl shadow-lg border hover:border-magic-gold">could</button>
+                    </div>
+                    <div class="mt-16 flex gap-8">
+                        <button onclick="resetBuilder('sb2')" class="text-gray-400 hover:text-white font-title text-xl border border-gray-600 px-6 py-3 rounded hover:border-white transition-all tracking-widest"><i class="fa-solid fa-rotate-left mr-3"></i>RESET</button>
+                        <button onclick="checkBuilder('sb2', ['Who', 'could', 'have', 'stolen', 'the wand?'])" class="btn-magic hidden text-xl px-10 py-3 tracking-widest" id="sb2-check">CAST SPELL</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- P21: TRIAL 6 (GAP FILL ACTION) (20) -->
+        <div class="page" id="page-21">
+            <div class="page-content">
+                <div class="text-center mb-12 w-full">
+                    <h2 class="font-title text-5xl text-magic-gold text-glow-gold mb-6">O.W.L. EXAM: INCANTATION</h2>
+                    <p class="font-body text-2xl text-gray-400">Fill the gap to deflect the curse.</p>
+                </div>
+                <div class="glass glass-panel p-16 w-full max-w-5xl text-center border border-magic-gold/30 shadow-[0_0_40px_rgba(207,181,59,0.1)]">
+                    <h3 class="font-body text-4xl mb-16 leading-relaxed italic">"He lost the duel because he didn't practice. He <span class="inline-block w-48 border-b-4 border-magic-gold mx-3 relative top-2"></span> trained harder!"</h3>
+                    <div class="flex justify-center gap-8 flex-wrap">
+                        <button class="btn-magic text-2xl py-5 px-8" onclick="checkExercise(this, false, 'MCQ')">must have</button>
+                        <button class="btn-magic text-2xl py-5 px-8" onclick="checkExercise(this, false, 'MCQ')">might have</button>
+                        <button class="btn-magic text-2xl py-5 px-8" onclick="checkExercise(this, true, 'MCQ')">should have</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- P22: SPEAKING ARENA (THE OWLERY) (21) -->
+        <div class="page" id="page-22">
+            <div class="page-content text-center w-full max-w-5xl">
+                <div class="text-magic-gold font-title tracking-[0.4em] mb-6 text-sm bg-magic-gold/10 px-6 py-2 rounded-full border border-magic-gold/30 inline-block">THE OWLERY</div>
+                <h2 class="font-title text-6xl text-white mb-8 text-glow-gold">SEND A HOWLER</h2>
+                <p class="font-body text-3xl text-gray-300 mb-12 leading-relaxed">Agent, you have 60 seconds to speak. Send an angry letter to a friend criticizing something they did. <br><br>Use: <span class="text-magic-gold font-bold italic">"You shouldn't have done that..."</span></p>
+                
+                <div class="glass p-12 rounded-full w-64 h-64 mx-auto flex items-center justify-center border-4 border-magic-gold shadow-[0_0_50px_rgba(207,181,59,0.3)] mb-12 relative overflow-hidden group">
+                    <span id="broadcast-timer" class="font-display text-7xl text-white z-10">60</span>
+                    <div id="bc-pulse" class="absolute inset-0 bg-magic-gold/20 hidden animate-ping"></div>
+                </div>
+                <button onclick="startBroadcastTimer()" class="btn-magic text-2xl px-16 py-6 rounded-full"><i class="fa-solid fa-microphone mr-4"></i> RECORD HOWLER</button>
+            </div>
+        </div>
+
+        <!-- P23: ETHICAL SPECTRUM 1 (22) -->
+        <div class="page" id="page-23">
+            <div class="page-content">
+                <h2 class="font-title text-5xl mb-16 text-center text-glow-gold w-full tracking-widest">MORAL COMPASS</h2>
+                <div class="glass p-16 w-full max-w-6xl text-center rounded-[3rem] border border-gray-600 shadow-2xl bg-[#0a0a0f]/90">
+                    <h3 class="font-body text-4xl mb-24 leading-relaxed italic">"If you need to save a friend's life, you <span class="text-magic-gold font-bold">should</span> use the Unforgivable Curses (Dark Magic)."</h3>
+                    <div class="flex justify-between items-center relative px-8 md:px-20 w-full">
+                        <div class="absolute top-1/2 left-20 right-20 h-3 bg-gradient-to-r from-red-600 via-gray-600 to-blue-500 transform -translate-y-1/2 z-0 rounded-full"></div>
+                        <button class="z-10 bg-black/90 px-8 py-5 rounded-full border-4 border-red-600 hover:bg-red-900/50 transition-all text-2xl font-title font-bold hover:scale-110 shadow-[0_0_20px_rgba(220,38,38,0.5)]">Strongly Agree</button>
+                        <button class="z-10 bg-black/90 px-8 py-5 rounded-full border-4 border-gray-500 hover:bg-gray-700/50 transition-all text-2xl font-title hover:scale-110">Neutral</button>
+                        <button class="z-10 bg-black/90 px-8 py-5 rounded-full border-4 border-blue-500 hover:bg-blue-900/50 transition-all text-2xl font-title font-bold hover:scale-110 shadow-[0_0_20px_rgba(59,130,246,0.5)]">Strongly Disagree</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- P24: ETHICAL SPECTRUM 2 (23) -->
+        <div class="page" id="page-24">
+            <div class="page-content">
+                <h2 class="font-title text-5xl mb-16 text-center text-glow-gold w-full tracking-widest">MORAL COMPASS</h2>
+                <div class="glass p-16 w-full max-w-6xl text-center rounded-[3rem] border border-gray-600 shadow-2xl bg-[#0a0a0f]/90">
+                    <h3 class="font-body text-4xl mb-24 leading-relaxed italic">"The professors <span class="text-magic-gold font-bold">shouldn't have</span> hidden the ancient magic from the students. Knowledge is power."</h3>
+                    <div class="flex justify-between items-center relative px-8 md:px-20 w-full">
+                        <div class="absolute top-1/2 left-20 right-20 h-3 bg-gradient-to-r from-blue-500 via-gray-600 to-red-600 transform -translate-y-1/2 z-0 rounded-full"></div>
+                        <button class="z-10 bg-black/90 px-8 py-5 rounded-full border-4 border-blue-500 hover:bg-blue-900/50 transition-all text-2xl font-title font-bold hover:scale-110 shadow-[0_0_20px_rgba(59,130,246,0.5)]">Strongly Disagree</button>
+                        <button class="z-10 bg-black/90 px-8 py-5 rounded-full border-4 border-gray-500 hover:bg-gray-700/50 transition-all text-2xl font-title hover:scale-110">Neutral</button>
+                        <button class="z-10 bg-black/90 px-8 py-5 rounded-full border-4 border-red-600 hover:bg-red-900/50 transition-all text-2xl font-title font-bold hover:scale-110 shadow-[0_0_20px_rgba(220,38,38,0.5)]">Strongly Agree</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- P25: RPG INTRO (24) -->
+        <div class="page" id="page-25">
+            <div class="page-content text-center w-full max-w-5xl">
+                <i class="fa-brands fa-d-and-d text-9xl text-magic-gold mb-10 animate-pulse text-glow-gold"></i>
+                <h1 class="font-title text-7xl text-white mb-8 tracking-widest">ENTER THE UNDERCROFT</h1>
+                <p class="font-body text-3xl text-gray-300 mb-16 leading-relaxed">Student, prepare your wand. You are about to face a deadly encounter. Use your logic and deduction to survive.</p>
+                <button onclick="nextPage()" class="btn-magic text-3xl px-16 py-8 animate-bounce rounded-2xl shadow-[0_0_30px_rgba(207,181,59,0.4)]">CAST LUMOS</button>
+            </div>
+        </div>
+
+        <!-- P26: CLASS SKILL CHECK (25) -->
+        <div class="page" id="page-26">
+            <div class="page-content">
+                <h2 class="font-title text-5xl text-magic-gold text-glow-gold mb-8 text-center">HOUSE TRAIT ACTIVATED</h2>
+                <div id="class-challenge-area" class="w-full max-w-6xl glass p-12 rounded-3xl border-2 border-magic-gold shadow-[0_0_40px_rgba(207,181,59,0.2)]">
+                    <!-- Renders via JS based on Hogwarts House -->
+                </div>
+            </div>
+        </div>
+
+        <!-- P27: RPG CLIMAX (TROLL ATTACK) (26) -->
+        <div class="page" id="page-27">
+            <div class="page-content">
+                <div class="w-full max-w-7xl flex flex-col md:flex-row gap-10">
+                    <div class="w-full md:w-1/2 glass rounded-3xl relative overflow-hidden h-[500px] flex items-center justify-center border-4 border-red-800 animate-[pulse_2s_infinite]">
+                        <div class="absolute inset-0 bg-red-900/30 mix-blend-overlay"></div>
+                        <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=1000" class="absolute inset-0 w-full h-full object-cover opacity-40 z-[-1] grayscale-[0.5]">
+                        <div class="z-10 text-center font-title bg-black/80 p-8 rounded-2xl border border-red-800">
+                            <h3 class="text-6xl text-white mb-6 text-glow-red tracking-widest">WAND CORE FAILING</h3>
+                            <div class="w-80 h-6 bg-gray-900 mx-auto rounded-full overflow-hidden border border-gray-600">
+                                <div id="rpg-timer" class="h-full bg-magic-gold w-full transition-all"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="w-full md:w-1/2 flex flex-col gap-8 justify-center">
+                        <div class="glass glass-panel p-10 font-body text-2xl text-gray-200 leading-relaxed border-l-4 border-red-800" id="rpg-timer-text">
+                            An Armored Troll blocks the exit! Deduce its weakness quickly to cast the right spell! <br><br>It's too fast for its size. Someone <span class="text-red-400 font-bold">________</span> used magic on it!
+                        </div>
+                        <div class="flex flex-col gap-6">
+                            <button class="glass p-6 text-left text-2xl font-display hover:bg-magic-gold/20 border-2 border-transparent hover:border-magic-gold rounded-xl transition-all" onclick="rpgTimerChoice(this, false)"><span class="text-magic-gold font-bold">might have</span></button>
+                            <button class="glass p-6 text-left text-2xl font-display hover:bg-magic-gold/20 border-2 border-transparent hover:border-magic-gold rounded-xl transition-all" onclick="rpgTimerChoice(this, true)"><span class="text-magic-gold font-bold">must have</span></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- P28: RPG RESOLUTION (27) -->
+        <div class="page" id="page-28">
+            <div class="page-content text-center w-full max-w-5xl">
+                <i class="fa-solid fa-hat-wizard text-9xl text-magic-gold mb-10 text-glow-gold"></i>
+                <h1 class="font-title text-6xl text-white mb-8">THE TROLL IS DEFEATED</h1>
+                <p class="font-body text-3xl text-gray-300 mb-12 leading-relaxed">You used your deduction skills to target its enchanted armor. The path is clear.</p>
+                <button onclick="nextPage()" class="btn-magic text-2xl px-12 py-6 rounded-xl">CHECK O.W.L. RESULTS</button>
+            </div>
+        </div>
+
+        <!-- P29: ENDING (28) -->
+        <div class="page" id="page-29">
+            <div class="page-content text-center w-full max-w-5xl">
+                <i class="fa-solid fa-award text-[8rem] text-magic-gold mb-8 text-glow-gold"></i>
+                <h1 class="font-title text-7xl text-white mb-6 uppercase" id="end-title">O.W.L. Exams Passed</h1>
+                <div class="glass glass-panel p-12 inline-block text-left mb-10 min-w-[500px] border border-magic-gold shadow-[0_0_50px_rgba(207,181,59,0.15)]">
+                    <div class="font-display text-3xl space-y-6">
+                        <p class="flex justify-between text-gray-300">Student: <span class="text-white font-bold font-title" id="end-name">...</span></p>
+                        <p class="flex justify-between text-gray-300">House: <span class="text-white font-bold font-title" id="end-class">...</span></p>
+                        <p class="flex justify-between text-gray-300">Wand Power: <span class="text-magic-gold font-bold" id="end-hp">100%</span></p>
+                        <p class="flex justify-between text-gray-300">House Points: <span class="text-magic-gold font-bold" id="end-xp">0</span></p>
+                    </div>
+                </div>
+                <br>
+                <button onclick="location.reload()" class="btn-magic text-2xl px-12 py-5 rounded-xl"><i class="fa-solid fa-rotate-right mr-4"></i> RETURN TO MAIN HALL</button>
+            </div>
+        </div>
+
+        <!-- Empty P30 for perfect 30 count balance (29) -->
+        <div class="page" id="page-30">
+            <!-- Reserved for structural integrity of the 30-page constraint -->
+            <div class="page-content text-center">
+                 <h1 class="font-title text-5xl text-magic-gold">Mischief Managed.</h1>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- NAVIGATION -->
+    <div class="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50 flex gap-8 glass px-10 py-4 rounded-full border border-magic-gold/30 bg-[#050508]/90 shadow-[0_0_30px_rgba(0,0,0,0.9)]">
+        <button onclick="prevPage()" class="text-gray-400 hover:text-white transition-colors font-title text-xl tracking-widest"><i class="fa-solid fa-chevron-left mr-3"></i> PREV</button>
+        <span class="font-display text-magic-gold text-2xl tracking-[0.2em]" id="page-indicator">01 / 29</span>
+        <button onclick="nextPage()" class="text-gray-400 hover:text-white transition-colors font-title text-xl tracking-widest">NEXT <i class="fa-solid fa-chevron-right ml-3"></i></button>
+    </div>
+
+    <script>
+        let currentO2 = 100;
+        let currentXP = 0;
+        let playerName = '';
+        let playerClass = '';
+        let houseColor = '#cfb53b';
+        let currentPageIndex = 0;
+        let isAnimating = false;
+        const pages = document.querySelectorAll('.page');
+        const maxPages = pages.length - 1; // 29 navigable pages
+
+        window.onload = () => {
+            pages.forEach((p, index) => { if(index !== 0) { p.classList.remove('active'); } });
+            createParticles();
+            updateHUD();
+            updateNav();
+        };
+
+        function updateHUD() {
+            document.getElementById('hp-bar').style.width = currentO2 + '%';
+            document.getElementById('hp-text').innerText = currentO2 + '%';
+            document.getElementById('xp-counter').innerText = currentXP;
+            document.getElementById('hud-player-name').innerText = playerName || '[ UNKNOWN ]';
+            document.getElementById('hud-player-class').innerText = playerClass || 'Awaiting Sorting';
+            
+            if(playerClass) {
+                document.getElementById('hud-player-class').style.color = houseColor;
+            }
+
+            if(currentO2 <= 30) {
+                document.getElementById('hp-bar').classList.replace('bg-magic-gold', 'bg-red-600');
+                document.getElementById('hp-text').classList.replace('text-magic-gold', 'text-red-500');
+                document.getElementById('hp-icon').classList.replace('text-magic-gold', 'text-red-500');
+                document.getElementById('hp-icon').classList.add('animate-ping');
+            } else {
+                document.getElementById('hp-bar').classList.replace('bg-red-600', 'bg-magic-gold');
+                document.getElementById('hp-text').classList.replace('text-red-500', 'text-magic-gold');
+                document.getElementById('hp-icon').classList.replace('text-red-500', 'text-magic-gold');
+                document.getElementById('hp-icon').classList.remove('animate-ping');
+            }
+        }
+
+        function takeDamage(amount) {
+            currentO2 = Math.max(0, currentO2 - amount);
+            updateHUD();
+            const flash = document.getElementById('dmg-flash');
+            flash.className = 'dmg-overlay';
+            setTimeout(() => flash.className = '', 400);
+            document.body.classList.add('shake-fx');
+            setTimeout(() => document.body.classList.remove('shake-fx'), 400);
+            if(currentO2 === 0) jumpToPage(28); // Jump to Ending
+        }
+
+        function addXP(amount) {
+            currentXP += amount;
+            updateHUD();
+            document.getElementById('xp-counter').classList.add('xp-gain');
+            setTimeout(() => document.getElementById('xp-counter').classList.remove('xp-gain'), 600);
+        }
+
+        function updateNav() {
+            document.getElementById('page-indicator').innerText = `${(currentPageIndex + 1).toString().padStart(2, '0')} / ${maxPages}`;
+            document.querySelectorAll('iframe').forEach(iframe => iframe.src = iframe.src);
+        }
+
+        function nextPage() {
+            if (currentPageIndex < maxPages - 1) {
+                pages[currentPageIndex].classList.remove('active');
+                currentPageIndex++;
+                pages[currentPageIndex].classList.add('active');
+                updateNav();
+                checkPageTriggers();
+            }
+        }
+
+        function prevPage() {
+            if (currentPageIndex > 0) {
+                pages[currentPageIndex].classList.remove('active');
+                currentPageIndex--;
+                pages[currentPageIndex].classList.add('active');
+                updateNav();
+                checkPageTriggers();
+            }
+        }
+
+        function jumpToPage(index) {
+            pages[currentPageIndex].classList.remove('active');
+            currentPageIndex = index;
+            pages[currentPageIndex].classList.add('active');
+            updateNav();
+            checkPageTriggers();
+        }
+
+        function checkPageTriggers() {
+            if (pages[currentPageIndex].id === 'page-26') renderClassChallenge();
+            if (pages[currentPageIndex].id === 'page-27') startRPGTimer();
+            else stopRPGTimer();
+
+            if (pages[currentPageIndex].id === 'page-29') {
+                document.getElementById('end-name').innerText = playerName || 'Student';
+                document.getElementById('end-class').innerText = playerClass || 'Hogwarts';
+                document.getElementById('end-class').style.color = houseColor;
+                document.getElementById('end-hp').innerText = currentO2 + '%';
+                document.getElementById('end-xp').innerText = currentXP;
+                
+                if (currentO2 <= 0) {
+                    document.getElementById('end-title').innerText = "WAND DESTROYED";
+                    document.getElementById('end-title').classList.replace('text-white', 'text-red-500');
+                }
+            }
+        }
+
+        function takeSortingQuiz(trait) {
+            let house, color, icon, desc;
+            if(trait === 'bravery') { house = 'GRYFFINDOR'; color = '#740001'; icon = 'fa-khanda'; desc = 'Bravery, daring, nerve, and chivalry.'; }
+            else if(trait === 'ambition') { house = 'SLYTHERIN'; color = '#1a472a'; icon = 'fa-snake'; desc = 'Ambition, leadership, and cunning.'; }
+            else if(trait === 'wisdom') { house = 'RAVENCLAW'; color = '#0e1a40'; icon = 'fa-crow'; desc = 'Intelligence, knowledge, and wit.'; }
+            else if(trait === 'loyalty') { house = 'HUFFLEPUFF'; color = '#ecb939'; icon = 'fa-badger-honey'; desc = 'Hard work, patience, and loyalty.'; }
+            
+            document.getElementById('sorting-quiz-area').classList.add('hidden');
+            
+            const reveal = document.getElementById('house-reveal-area');
+            reveal.classList.remove('hidden');
+            reveal.innerHTML = `
+                <i class="fa-solid ${icon} text-7xl mb-4" style="color: ${color}"></i>
+                <h3 class="font-title text-5xl mb-2" style="color: ${color}">${house}</h3>
+                <p class="font-body text-gray-300 text-xl mb-8">${desc}</p>
+            `;
+            
+            playerClass = house;
+            houseColor = color;
+            
+            document.getElementById('name-input-section').classList.remove('hidden');
+            document.getElementById('name-input-section').classList.add('flex');
+            document.getElementById('player-name-input').focus();
+        }
+
+        function confirmAgent() {
+            const input = document.getElementById('player-name-input').value.trim();
+            if(input) {
+                playerName = input;
+                updateHUD();
+                addXP(100);
+                nextPage();
+            }
+        }
+
+        function cycleWord(element, wordsArray) {
+            let currentWord = element.innerText;
+            let index = wordsArray.indexOf(currentWord);
+            element.innerText = (index === -1 || index === wordsArray.length - 1) ? wordsArray[0] : wordsArray[index + 1];
+            element.classList.add('bg-white/20');
+            setTimeout(() => element.classList.remove('bg-white/20'), 200);
+        }
+
+        function showDef(word) {
+            const w = document.getElementById('dict-word');
+            const d = document.getElementById('dict-def');
+            if(word === 'rebellion') { w.innerText = "REBELLION"; d.innerText = "An attempt to overthrow authority using violence."; }
+            if(word === 'conceal') { w.innerText = "CONCEAL"; d.innerText = "To hide something or keep it secret."; }
+            addXP(10);
+        }
+
+        function revealVocabAdvanced(vocabId, element) {
+            document.getElementById(vocabId).classList.remove('hidden');
+            element.classList.add('opacity-30', 'pointer-events-none');
+            
+            const statusEl = document.getElementById('status-' + vocabId);
+            if(statusEl) {
+                statusEl.innerHTML = statusEl.innerHTML.replace('fa-lock', 'fa-lock-open');
+                statusEl.classList.replace('text-gray-500', 'text-magic-gold');
+                statusEl.classList.replace('border-gray-600', 'border-magic-gold');
+                statusEl.classList.add('bg-magic-gold/20', 'shadow-[0_0_15px_rgba(207,181,59,0.4)]');
+            }
+            addXP(20);
+        }
+
+        let bcTimer;
+        function startBroadcastTimer() {
+            let time = 60;
+            const display = document.getElementById('broadcast-timer');
+            const pulse = document.getElementById('bc-pulse');
+            pulse.classList.remove('hidden');
+            clearInterval(bcTimer);
+            bcTimer = setInterval(() => {
+                time--; display.innerText = time;
+                if(time <= 0) { clearInterval(bcTimer); addXP(100); pulse.classList.add('hidden'); }
+            }, 1000);
+        }
+
+        function renderClassChallenge() {
+            const area = document.getElementById('class-challenge-area');
+            let content = "";
+            if(playerClass === 'GRYFFINDOR') {
+                content = `<div class="text-center"><i class="fa-solid fa-khanda text-7xl text-red-600 mb-6 drop-shadow-lg"></i><h3 class="font-title text-4xl mb-4 text-white">GRYFFINDOR COURAGE</h3><p class="font-body text-2xl mb-8 text-gray-300">A dark wizard blocks your path. You draw your wand. Deduce his weakness!</p><p class="font-display text-3xl mb-8">"He is breathing heavily. He <span class="text-magic-gold border-b border-magic-gold px-2">must have / can't have</span> been running!"</p><button class="btn-magic text-xl px-12 py-4 mr-4" onclick="takeDamage(20)">can't have</button><button class="btn-magic text-xl px-12 py-4" onclick="addXP(150); nextPage()">must have</button></div>`;
+            } else if(playerClass === 'SLYTHERIN') {
+                content = `<div class="text-center"><i class="fa-solid fa-snake text-7xl text-green-500 mb-6 drop-shadow-lg"></i><h3 class="font-title text-4xl mb-4 text-white">SLYTHERIN CUNNING</h3><p class="font-body text-2xl mb-8 text-gray-300">You find a locked chest. You need to crack the code by deducing the past.</p><p class="font-display text-3xl mb-8">"The lock is melted. Someone <span class="text-magic-gold border-b border-magic-gold px-2">could have / should have</span> used a fire spell."</p><button class="btn-magic text-xl px-12 py-4 mr-4" onclick="addXP(150); nextPage()">could have</button><button class="btn-magic text-xl px-12 py-4" onclick="takeDamage(20)">should have</button></div>`;
+            } else if(playerClass === 'RAVENCLAW') {
+                content = `<div class="text-center"><i class="fa-solid fa-crow text-7xl text-blue-400 mb-6 drop-shadow-lg"></i><h3 class="font-title text-4xl mb-4 text-white">RAVENCLAW LOGIC</h3><p class="font-body text-2xl mb-8 text-gray-300">Solve the riddle of the empty potion bottle.</p><p class="font-display text-3xl mb-8">"The potion is gone, but the seal is intact. The thief <span class="text-magic-gold border-b border-magic-gold px-2">must have / couldn't have</span> opened it normally."</p><button class="btn-magic text-xl px-12 py-4 mr-4" onclick="addXP(150); nextPage()">couldn't have</button><button class="btn-magic text-xl px-12 py-4" onclick="takeDamage(20)">must have</button></div>`;
+            } else {
+                content = `<div class="text-center"><i class="fa-solid fa-badger-honey text-7xl text-yellow-500 mb-6 drop-shadow-lg"></i><h3 class="font-title text-4xl mb-4 text-white">HUFFLEPUFF LOYALTY</h3><p class="font-body text-2xl mb-8 text-gray-300">Your friend is hurt after a duel. Criticize their reckless action.</p><p class="font-display text-3xl mb-8">"You <span class="text-magic-gold border-b border-magic-gold px-2">shouldn't have / couldn't have</span> fought the troll alone!"</p><button class="btn-magic text-xl px-12 py-4 mr-4" onclick="takeDamage(20)">couldn't have</button><button class="btn-magic text-xl px-12 py-4" onclick="addXP(150); nextPage()">shouldn't have</button></div>`;
+            }
+            area.innerHTML = content;
+        }
+
+        let rpgTimerInterval;
+        function startRPGTimer() {
+            const bar = document.getElementById('rpg-timer');
+            let width = 100;
+            clearInterval(rpgTimerInterval);
+            rpgTimerInterval = setInterval(() => {
+                width -= 1.5; bar.style.width = width + '%';
+                if(width <= 0) { 
+                    clearInterval(rpgTimerInterval); 
+                    takeDamage(25); 
+                    document.getElementById('rpg-timer-text').innerHTML = "<span class='text-red-500 font-bold'>TIME OUT!</span> You hesitated and took a hit! Try again.";
+                    setTimeout(startRPGTimer, 2000); 
+                }
+            }, 100);
+        }
+
+        function stopRPGTimer() { clearInterval(rpgTimerInterval); }
+
+        function rpgTimerChoice(btn, isCorrect) {
+            clearInterval(rpgTimerInterval);
+            if(isCorrect) { 
+                addXP(200); 
+                btn.classList.add('bg-green-500/50', 'border-green-500');
+                setTimeout(() => nextPage(), 1000); 
+            } 
+            else { 
+                takeDamage(25); 
+                btn.classList.add('bg-red-500/50', 'border-red-500', 'shake-fx');
+                setTimeout(() => {
+                    btn.classList.remove('bg-red-500/50', 'border-red-500', 'shake-fx');
+                    startRPGTimer(); 
+                }, 1000);
+            }
+        }
+
+        function toggleFullScreen() {
+            if (!document.fullscreenElement) {
+                const req = document.documentElement.requestFullscreen();
+                if (req) {
+                    req.catch(err => {
+                        console.warn("Ecrã inteiro não permitido:", err);
+                        const msg = document.createElement("div");
+                        msg.className = "fixed top-24 left-1/2 transform -translate-x-1/2 bg-red-900/90 text-white font-body px-6 py-3 rounded border border-red-500 z-[9999] shadow-lg text-center";
+                        msg.innerText = "Fullscreen mode is not permitted in this environment.";
+                        document.body.appendChild(msg);
+                        setTimeout(() => msg.remove(), 4000);
+                    });
+                }
+            }
+            else {
+                if (document.exitFullscreen) document.exitFullscreen();
+            }
+        }
+
+        function toggleDMTools() { document.getElementById('dm-panel').classList.toggle('hidden'); document.getElementById('dm-panel').classList.toggle('flex'); }
+        function toggleWhiteboard() { document.getElementById('whiteboard-panel').classList.toggle('hidden'); document.getElementById('whiteboard-panel').classList.toggle('flex'); }
+        function clearWhiteboard() { document.getElementById('wb-textarea').value = ''; }
+
+        let dmTimer; let dmSecs = 0;
+        document.getElementById('btn-timer-start').onclick = () => { clearInterval(dmTimer); dmTimer = setInterval(() => { dmSecs++; document.getElementById('dm-timer-display').innerText = `${String(Math.floor(dmSecs/60)).padStart(2,'0')}:${String(dmSecs%60).padStart(2,'0')}`; }, 1000); };
+        document.getElementById('btn-timer-stop').onclick = () => { clearInterval(dmTimer); dmSecs = 0; document.getElementById('dm-timer-display').innerText = "00:00"; };
+
+        function createParticles() {
+            const container = document.getElementById('particle-container');
+            for(let i=0; i<40; i++) {
+                let p = document.createElement('div'); p.className = 'particle';
+                let size = Math.random() * 3 + 1; p.style.width = size + 'px'; p.style.height = size + 'px';
+                p.style.left = Math.random() * 100 + 'vw'; p.style.animationDuration = (Math.random() * 12 + 5) + 's';
+                p.style.animationDelay = (Math.random() * 5) + 's'; container.appendChild(p);
+            }
+        }
+
+        // Trial 1 Matching Logic
+        let selectedMatch = null;
+        document.querySelectorAll('.match-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                if(this.classList.contains('matched')) return;
+                if(!selectedMatch) { 
+                    selectedMatch = this; 
+                    this.classList.add('border-magic-gold', 'bg-magic-gold/20'); 
+                } 
+                else {
+                    if(this.parentElement.id === selectedMatch.parentElement.id) {
+                        selectedMatch.classList.remove('border-magic-gold', 'bg-magic-gold/20');
+                        selectedMatch = this;
+                        this.classList.add('border-magic-gold', 'bg-magic-gold/20');
+                    } else {
+                        if(this.dataset.match === selectedMatch.dataset.match) {
+                            this.classList.add('bg-green-600/30', 'matched', 'text-green-400'); 
+                            this.classList.replace('border-transparent', 'border-green-500');
+                            selectedMatch.classList.add('bg-green-600/30', 'matched', 'text-green-400');
+                            selectedMatch.classList.replace('border-magic-gold', 'border-green-500');
+                            addXP(50); selectedMatch = null;
+                        } else { 
+                            takeDamage(10); 
+                            this.classList.add('bg-red-600/30', 'border-red-600');
+                            setTimeout(() => {
+                                this.classList.remove('bg-red-600/30', 'border-red-600');
+                                selectedMatch.classList.remove('border-magic-gold', 'bg-magic-gold/20'); 
+                                selectedMatch = null; 
+                            }, 500);
+                        }
+                    }
+                }
+            });
+        });
+
+        // MCQ Generic Check
+        function checkExercise(btn, isCorrect, type) {
+            if (isAnimating) return;
+            isAnimating = true;
+            if(isCorrect) {
+                btn.classList.add('bg-green-600/50', 'border-green-500');
+                addXP(50);
+                setTimeout(() => { isAnimating = false; btn.classList.remove('bg-green-600/50', 'border-green-500'); }, 1000);
+            } else {
+                takeDamage(15);
+                btn.classList.add('bg-red-600/50', 'border-red-600', 'shake-fx');
+                setTimeout(() => { isAnimating = false; btn.classList.remove('bg-red-600/50', 'border-red-600', 'shake-fx'); }, 1000);
+            }
+        }
+
+        // Sentence Builders
+        document.querySelectorAll('.builder-word').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const prefix = this.parentElement.id.split('-')[0];
+                const answerBox = document.getElementById(prefix + '-answer');
+                const bankBox = document.getElementById(prefix + '-bank');
+                const checkBtn = document.getElementById(prefix + '-check');
+                
+                if(this.parentElement.id.includes('bank')) {
+                    answerBox.appendChild(this);
+                } else {
+                    bankBox.appendChild(this);
+                }
+                
+                if(answerBox.children.length === (prefix==='sb1'?4:5)) { 
+                    checkBtn.classList.remove('hidden');
+                } else {
+                    checkBtn.classList.add('hidden');
+                }
+            });
+        });
+
+        function resetBuilder(prefix) {
+            const answerBox = document.getElementById(prefix + '-answer');
+            const bankBox = document.getElementById(prefix + '-bank');
+            Array.from(answerBox.children).forEach(child => bankBox.appendChild(child));
+            document.getElementById(prefix + '-check').classList.add('hidden');
+            answerBox.classList.remove('border-green-500', 'border-red-500');
+        }
+
+        function checkBuilder(prefix, correctOrderArray) {
+            const answerBox = document.getElementById(prefix + '-answer');
+            const currentOrder = Array.from(answerBox.children).map(child => child.innerText);
+            let isCorrect = true;
+            for(let i=0; i<correctOrderArray.length; i++){
+                if(currentOrder[i] !== correctOrderArray[i]) isCorrect = false;
+            }
+
+            if(isCorrect) {
+                answerBox.classList.replace('border-dashed', 'border-solid');
+                answerBox.classList.replace('border-magic-gold/50', 'border-green-500');
+                addXP(100);
+            } else {
+                takeDamage(20);
+                answerBox.classList.replace('border-magic-gold/50', 'border-red-600');
+                setTimeout(() => {
+                    answerBox.classList.replace('border-red-600', 'border-magic-gold/50');
+                }, 1000);
+            }
+        }
+
+        function fixAnomaly(element, correction) {
+            element.innerText = correction;
+            element.classList.replace('text-red-500', 'text-magic-gold');
+            element.classList.replace('border-red-600', 'border-magic-gold');
+            element.classList.remove('hover:bg-red-900/40', 'cursor-pointer');
+            element.onclick = null;
+            addXP(30);
+            element.style.animation = 'pulse-gold 0.5s ease';
+        }
+    </script>
+</body>
+</html>
